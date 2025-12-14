@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectToMongoDB from "./database/connect.ts";
 import mongoose from "mongoose";
+import auth from "./api/auth.ts";
 
 dotenv.config();
 const PORT = process.env.PORT || 7000;
@@ -11,8 +12,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use("/user", auth);
+// Routes
+
 app.listen(PORT, () => {
   console.clear();
+  console.log("-----------------------------------------",);
   console.log("Server Started, Listening on : ", PORT);
   const DB_URL = process.env.MONGO_DB_URL;
   const connectionConfig: mongoose.ConnectOptions = {};
@@ -21,7 +27,8 @@ app.listen(PORT, () => {
   }
   connectToMongoDB(DB_URL, connectionConfig)
     .then((response) => {
-      console.log("Database connect Success !");
+      console.log("Database connected successfully !!");
+      console.log("-----------------------------------------");
     })
     .catch((error) => {
       console.error("Connect Error", error);
