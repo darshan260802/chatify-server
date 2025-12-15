@@ -1,4 +1,4 @@
-import { User } from "../database/models/User.ts";
+import { User } from "../../database/models/User.ts";
 import nodemailer from "nodemailer";
 import fs from "node:fs";
 import jwt from "jsonwebtoken";

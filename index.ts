@@ -3,7 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectToMongoDB from "./database/connect.ts";
 import mongoose from "mongoose";
-import auth from "./api/auth.ts";
+import auth from "./api/insecure/auth.ts";
+import secureRoutes from "./api/secure/index.ts";
 
 dotenv.config();
 const PORT = process.env.PORT || 7000;
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use("/user", auth);
+app.use("/secure", secureRoutes);
 // Routes
 
 app.listen(PORT, () => {
