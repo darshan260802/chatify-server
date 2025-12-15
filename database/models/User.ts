@@ -55,6 +55,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  isVerified: {
+    type:Boolean,
+    default: false
+  },
+  isOnboarded: {
+    type: Boolean,
+    default: false
+  }
 });
 
 export type UserType = InferSchemaType<typeof UserSchema>;

@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
+import {Types} from "mongoose";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,8 +34,8 @@ const mailSender = nodemailer.createTransport({
   },
 });
 
-export async function sendVerificationLink(email: string) {
-  const token = jwt.sign({ email: email }, process.env.JWT_SECRET || "");
+export async function sendVerificationLink(userId: Types.ObjectId, email: string) {
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET || "");
   const verificationLink = process.env.VERIFICATION_URL + "?token=" + token;
 
   const emailBody = fs.readFileSync(
