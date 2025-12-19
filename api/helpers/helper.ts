@@ -42,6 +42,7 @@ export async function sendVerificationLink(userId: Types.ObjectId, email: string
     path.join(
       __dirname,
       "../",
+      "../",
       "resources",
       "templates",
       "email-verification.html"
