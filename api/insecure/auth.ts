@@ -10,14 +10,17 @@ const SALT = bcrypt.genSaltSync(10);
 
 // Create User (Signup)
 router.post('/create', async function (request: Request, response: Response) {
-  const { email, name, password } = request.body as CreateUserPayload;
+  const { email, firstName, lastName, password } = request.body as CreateUserPayload;
   const validationErrors: Partial<CreateUserPayload> = {};
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     validationErrors['email'] = 'Invalid or No Email Provided !!';
   }
-  if (!name || !name.trim() || name.trim().length < 3) {
-    validationErrors['name'] = 'Name must be at least of length 3';
+  if (!firstName || !firstName.trim() || firstName.trim().length < 3) {
+    validationErrors['firstName'] = 'First Name must be at least of length 3';
+  }
+  if (!lastName || !lastName.trim() || lastName.trim().length < 3) {
+    validationErrors['lastName'] = 'Last Name must be at least of length 3';
   }
   if (!password || password.trim().length < 8) {
     validationErrors['password'] = 'Password must be at least of 8';
@@ -41,14 +44,15 @@ router.post('/create', async function (request: Request, response: Response) {
   const findCode = await generateFindCode();
 
   User.create({
-    name,
+    firstName,
+    lastName,
     email,
     password: encryptedPassword,
     findCode
   })
     .then(function (user) {
       sendVerificationLink(user._id, email);
-      response.status(200).json({ success: true, message: 'Signup success', data: { email: user.email } });
+      response.status(200).json({ success: true, message: 'Signup success, An email verification link has been sent to your email address.', data: { user } });
     })
     .catch(function (error) {
       console.error('User Create failed: ', error);
@@ -97,11 +101,6 @@ router.post('/login', async function (request: Request, response: Response) {
     return;
   }
 
-  if (!user.isVerified) {
-    response.status(400).json({ success: false, message: 'Login Failed!', error: 'Email not verified. Please verify your email before logging in.' });
-    return;
-  }
-
   const isPasswordMatch = bcrypt.compareSync(password, user.password);
   if (!isPasswordMatch) {
     response.status(400).json({ success: false, message: 'Login Failed!', error: 'Invalid Email or Password' });
@@ -109,6 +108,13 @@ router.post('/login', async function (request: Request, response: Response) {
   }
 
   const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '1d' });
+  response.cookie('token', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  });
+
   response.status(200).json({ success: true, message: 'Login Successful', data: { token, user } });
 });
 

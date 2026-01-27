@@ -1,10 +1,15 @@
-import mongoose, { type InferSchemaType } from "mongoose";
+import mongoose, { type InferSchemaType } from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
     required: true,
-    maxLength: 20,
+    maxLength: 20
+  },
+  lastName: {
+    type: String,
+    required: true,
+    maxLength: 20
   },
   email: {
     type: String,
@@ -12,12 +17,12 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     match: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
-    index: true,
+    index: true
   },
   password: {
     type: String,
     required: true,
-    trim: true,
+    trim: true
   },
   findCode: {
     type: String,
@@ -27,36 +32,36 @@ const UserSchema = new mongoose.Schema({
     uppercase: true,
     unique: true,
     required: true,
-    index: true,
+    index: true
   },
   publicProfile: {
     type: Boolean,
     required: false,
-    default: true,
+    default: true
   },
   age: {
     type: Number,
     min: 13,
     max: 150,
-    required: false,
+    required: false
   },
   gender: {
     type: String,
     required: false,
-    enum: ["Male", "Female"],
+    enum: ['Male', 'Female']
   },
   aboutMe: {
     type: String,
     required: false,
     minLength: 6,
-    default: "Hey ! I am using Chatify App.",
+    default: 'Hey ! I am using Chatify App.'
   },
   intrests: {
     type: String,
-    required: false,
+    required: false
   },
   isVerified: {
-    type:Boolean,
+    type: Boolean,
     default: false
   },
   isOnboarded: {
@@ -67,4 +72,4 @@ const UserSchema = new mongoose.Schema({
 
 export type UserType = InferSchemaType<typeof UserSchema>;
 
-export const User = mongoose.model<UserType>("USER", UserSchema);
+export const User = mongoose.model<UserType>('USER', UserSchema);
